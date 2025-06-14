@@ -16,16 +16,15 @@ func (s *Server) weather(w http.ResponseWriter, r *http.Request){
         return
     }
 
-	s.idCounter += 1
-	id := s.idCounter
-	fmt.Printf("Request with id %d arrived\n", id)
+	s.requestIdCounter += 1
+	id := s.requestIdCounter
+	s.logger.Info(fmt.Sprintf("Request with id %d arrived", id))
     responseChan := make(chan resp.WeatherResponse, 1) // <--- buffered to prevent blocking
-    group := s.getOrCreateRequestGroup(location, w)
-    s.addRequest(responseChan, group)
+    s.registerToGroup(location, responseChan)
 
     select {
     case response := <-responseChan:
-		fmt.Printf("Request with id %d served\n", id)
+		s.logger.Info(fmt.Sprintf("Request with id %d served", id))
         w.Header().Set("Content-Type", "application/json")
         json.NewEncoder(w).Encode(response)
     case <-time.After(10 * time.Second):  // safety timeout

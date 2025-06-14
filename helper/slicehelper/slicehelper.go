@@ -25,3 +25,14 @@ func Partition[T any](items []T, n int) [][]T {
 
 	return partitions
 }
+
+// FindAndRemove removes the first element matching the predicate
+func FindAndRemove[T any](slice []T, predicate func(T) bool) ([]T, bool) {
+    for i, v := range slice {
+        if predicate(v) {
+            // Remove element at index i
+            return append(slice[:i], slice[i+1:]...), true
+        }
+    }
+    return slice, false
+}

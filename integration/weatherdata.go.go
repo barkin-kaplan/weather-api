@@ -2,6 +2,7 @@ package integration
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -23,8 +24,8 @@ type WeatherData struct {
 
 func NewWeatherData(weatherApiKey, weatherApiUrl, weatherStackKey, weatherStackUrl string) *WeatherData {
 	return &WeatherData{
-		weatherApiKey: weatherApiKey,
-		weatherApiUrl: weatherApiUrl,
+		weatherApiKey:   weatherApiKey,
+		weatherApiUrl:   weatherApiUrl,
 		weatherStackKey: weatherStackKey,
 		weatherStackUrl: weatherStackUrl,
 	}
@@ -44,6 +45,9 @@ func (s *WeatherData) FetchWeatherAPI(location string) (float64, error) {
 	if err != nil {
 		return 0, err
 	}
+	if apiResp.Current.TempC == 0 {
+		return 0, errors.New("wrong api format")
+	}
 	return apiResp.Current.TempC, nil
 }
 
@@ -60,6 +64,9 @@ func (s *WeatherData) FetchWeatherStack(location string) (float64, error) {
 	err = json.Unmarshal(body, &stackResp)
 	if err != nil {
 		return 0, err
+	}
+	if stackResp.Current.Temperature == 0 {
+		return 0, errors.New("wrong api format")
 	}
 	return stackResp.Current.Temperature, nil
 }
