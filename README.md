@@ -20,3 +20,8 @@ POSTGRE_CONN_STRING = "host=localhost user=your_username dbname=weather_db port=
 ```bash
 go run main.go
 ```
+
+### Accessing the API
+```bash
+http://localhost:8080/weather?q=Istanbul
+```
