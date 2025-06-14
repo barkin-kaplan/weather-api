@@ -1,6 +1,6 @@
 ## Getting started
 ```bash
-git clone 
+git clone https://github.com/barkin-kaplan/weather-api.git
 ```
 
 ### Create .env file
